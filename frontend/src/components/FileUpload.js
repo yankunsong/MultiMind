@@ -2,9 +2,9 @@ import React from 'react';
 import { Upload, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-function FileUpload() {
+function FileUpload({ onChange }) {
   return (
-    <Upload>
+    <Upload onChange={onChange}>
       <Button icon={<UploadOutlined />}>Upload File</Button>
     </Upload>
   );

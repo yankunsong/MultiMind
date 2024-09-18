@@ -6,7 +6,7 @@ function SubmitButton({ onSubmit }) {
     <Button
       type="primary"
       onClick={onSubmit}
-      style={{ marginTop: '20px' }}
+      style={{ width: '100%' }}
     >
       Submit
     </Button>

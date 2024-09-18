@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from 'antd';
 
 const { TextArea } = Input;
 
-function TextInput() {
-  const [text, setText] = useState('');
-
-  const handleTextChange = (e) => {
-    setText(e.target.value);
-  };
-
+function TextInput({ value, onChange }) {
   return (
     <TextArea
       rows={4}
       placeholder="Paste your text here"
       style={{ marginBottom: '20px', width: '100%' }}
-      value={text}
-      onChange={handleTextChange}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
     />
   );
 }
