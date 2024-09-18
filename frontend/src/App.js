@@ -1,8 +1,9 @@
 import React from 'react';
-import { Layout, Typography, ConfigProvider } from 'antd';
+import { Layout, Typography, ConfigProvider, Row, Col } from 'antd';
 import TextInput from './components/TextInput';
 import FileUpload from './components/FileUpload';
 import SubmitButton from './components/SubmitButton';
+import MultiMindReport from './components/MultiMindReport';
 import './App.css';
 
 const { Header, Content } = Layout;
@@ -23,11 +24,20 @@ function App() {
           </Title>
         </Header>
         <Content style={{ padding: '0 50px', marginTop: '20px' }}>
-          <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-            <TextInput />
-            <FileUpload />
-            <SubmitButton onSubmit={handleSubmit} />
-          </div>
+          <Row gutter={24}>
+            <Col span={12}>
+              <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+                <TextInput />
+                <FileUpload />
+                <SubmitButton onSubmit={handleSubmit} />
+              </div>
+            </Col>
+            <Col span={12}>
+              <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+                <MultiMindReport />
+              </div>
+            </Col>
+          </Row>
         </Content>
       </Layout>
     </ConfigProvider>

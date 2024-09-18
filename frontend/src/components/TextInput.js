@@ -14,7 +14,7 @@ function TextInput() {
     <TextArea
       rows={4}
       placeholder="Paste your text here"
-      style={{ marginBottom: '20px' }}
+      style={{ marginBottom: '20px', width: '100%' }}
       value={text}
       onChange={handleTextChange}
     />
