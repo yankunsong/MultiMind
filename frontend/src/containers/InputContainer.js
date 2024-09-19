@@ -4,7 +4,7 @@ import TextInput from '../components/TextInput';
 import FileUpload from '../components/FileUpload';
 import SubmitButton from '../components/SubmitButton';
 
-function InputContainer() {
+function InputContainer({ onSubmit }) {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
 
@@ -21,6 +21,7 @@ function InputContainer() {
 
   const handleSubmit = () => {
     console.log('Submitting:', { text, file });
+    onSubmit(); // Call the onSubmit prop to show the report
     // TODO: Implement submission logic
   };
 

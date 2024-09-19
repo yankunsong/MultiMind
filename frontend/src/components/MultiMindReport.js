@@ -1,7 +1,5 @@
 import React from 'react';
-import { Table, Typography } from 'antd';
-
-const { Title } = Typography;
+import { Table } from 'antd';
 
 function MultiMindReport() {
   const columns = [
@@ -43,10 +41,7 @@ function MultiMindReport() {
   ];
 
   return (
-    < >
-      <Title level={4}>MultiMind Report</Title>
-      <Table columns={columns} dataSource={data} pagination={false} />
-    </ >
+    <Table columns={columns} dataSource={data} pagination={false} />
   );
 }
 
