@@ -6,6 +6,7 @@ function SubmitButton({ onSubmit }) {
     <Button
       type="primary"
       onClick={onSubmit}
+      className="finra-button"
       style={{ width: '100%' }}
     >
       Submit

@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -14,18 +14,18 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: flex-start;
+  font-size: 16px;
+  color: #333333;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #0070b7; /* Updated color */
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +35,35 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* FINRA-specific styles */
+.finra-primary-bg {
+  background-color: #0070b7; /* Updated color */
+}
+
+.finra-secondary-bg {
+  background-color: #f0f0f0; /* Light gray from FINRA homepage */
+}
+
+.finra-text-primary {
+  color: #0070b7; /* Updated color */
+}
+
+.finra-text-secondary {
+  color: #333333; /* Dark gray for text */
+}
+
+.finra-button {
+  background-color: #0070b7; /* Updated color */
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.finra-button:hover {
+  background-color: #005a9e; /* Slightly darker blue for hover state */
 }

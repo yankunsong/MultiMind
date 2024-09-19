@@ -6,7 +6,7 @@ function PersonaSelector({ personas, onSelect, selectedPersonaId }) {
     <Radio.Group onChange={(e) => onSelect(e.target.value)} value={selectedPersonaId}>
       <Space direction="vertical">
         {personas.map(persona => (
-          <Radio key={persona.id} value={persona.id}>
+          <Radio key={persona.id} value={persona.id} className="finra-text-secondary">
             {persona.name}
           </Radio>
         ))}
