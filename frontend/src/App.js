@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Typography, ConfigProvider, Row, Col } from 'antd';
 import InputContainer from './containers/InputContainer';
 import MultiMindReportContainer from './containers/MultiMindReportContainer';
+import PersonaContainer from './containers/PersonaContainer';
 import './App.css';
 
 const { Header, Content } = Layout;
@@ -17,13 +18,18 @@ function App() {
           </Title>
         </Header>
         <Content style={{ padding: '0 50px', marginTop: '20px' }}>
-          <Row gutter={24}>
+          <Row gutter={[24, 24]}>
             <Col span={12}>
               <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
                 <InputContainer />
               </div>
             </Col>
             <Col span={12}>
+              <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+                <PersonaContainer />
+              </div>
+            </Col>
+            <Col span={24}>
               <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
                 <MultiMindReportContainer />
               </div>
