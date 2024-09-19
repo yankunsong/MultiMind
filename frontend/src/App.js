@@ -116,7 +116,7 @@ function App() {
             color: "#ffffff",
           }}
         >
-          MultiMind AI ©{new Date().getFullYear()} Created by FINRA
+          MultiMind AI ©{new Date().getFullYear()} Created by MMI team
         </Footer>
       </Layout>
     </ConfigProvider>
