@@ -50,6 +50,12 @@ function App() {
           colorPrimary: "#0070b7",
           fontFamily: "'Open Sans', sans-serif",
         },
+        components: {
+          Tabs: {
+            titleFontSize: 16,
+            inkBarColor: "#0070b7",
+          },
+        },
       }}
     >
       <Layout className="layout">
@@ -59,7 +65,10 @@ function App() {
           </Title>
         </Header>
         <Content style={{ padding: "50px 50px", backgroundColor: "#f0f0f0" }}>
-          <Tabs defaultActiveKey="1">
+          <Tabs 
+            defaultActiveKey="1"
+            className="custom-tabs"
+          >
             <TabPane tab="File Submission" key="1">
               <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
                 <InputContainer onSubmit={handleShowReport} />
