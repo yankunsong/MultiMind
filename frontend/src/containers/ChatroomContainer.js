@@ -1,0 +1,145 @@
+import React, { useState } from "react";
+import { Input, Button, Select, List, Avatar, Typography } from "antd";
+import { SendOutlined } from "@ant-design/icons";
+
+const { TextArea } = Input;
+const { Option } = Select;
+const { Title, Text } = Typography;  // Add Text to the destructuring
+
+const personas = [
+  { id: 1, name: "Emily Chen", color: "#FF6B6B" },
+  { id: 2, name: "Michael Johnson", color: "#4ECDC4" },
+  { id: 3, name: "Sarah Thompson", color: "#45B7D1" },
+  { id: 4, name: "David Rodriguez", color: "#FFA07A" },
+];
+
+const dummyResponses = [
+  "That's an interesting perspective. Have you considered...",
+  "I agree with your point. Additionally, we should think about...",
+  "I'm not sure I agree. My concern is...",
+  "That's a valid point. However, we also need to consider...",
+];
+
+function ChatroomContainer() {
+  const [selectedPersonas, setSelectedPersonas] = useState([]);
+  const [message, setMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
+
+  const handlePersonaChange = (value) => {
+    setSelectedPersonas(value);
+  };
+
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevents default behavior (new line)
+      handleSendMessage();
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (message.trim() && selectedPersonas.length > 0) {
+      const newUserMessage = { sender: "You", content: message, isUser: true };
+      setChatHistory([...chatHistory, newUserMessage]);
+
+      // Generate dummy responses from selected personas
+      selectedPersonas.forEach((personaId) => {
+        const persona = personas.find((p) => p.id === personaId);
+        const dummyResponse = {
+          sender: persona.name,
+          content:
+            dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
+          isUser: false,
+          color: persona.color,
+        };
+        setTimeout(() => {
+          setChatHistory((prev) => [...prev, dummyResponse]);
+        }, Math.random() * 1000 + 500); // Random delay between 500-1500ms
+      });
+
+      setMessage("");
+    }
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Title level={4}>Chatroom</Title>
+      <Select
+        mode="multiple"
+        style={{ width: "100%", marginBottom: "1rem" }}
+        placeholder="Select personas to chat with"
+        onChange={handlePersonaChange}
+        value={selectedPersonas}
+      >
+        {personas.map((persona) => (
+          <Option key={persona.id} value={persona.id}>
+            {persona.name}
+          </Option>
+        ))}
+      </Select>
+      <List
+        itemLayout="horizontal"
+        dataSource={chatHistory}
+        renderItem={(item) => (
+          <List.Item style={{ 
+            justifyContent: item.isUser ? 'flex-end' : 'flex-start',
+            border: 'none', // Remove the border between items
+            padding: '4px 0' // Reduce padding between items
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: item.isUser ? 'row-reverse' : 'row',
+              alignItems: 'flex-start',
+              maxWidth: '70%'
+            }}>
+              <Avatar style={{ 
+                backgroundColor: item.isUser ? '#1890ff' : item.color, 
+                marginRight: item.isUser ? 0 : 8, 
+                marginLeft: item.isUser ? 8 : 0 
+              }}>
+                {item.sender[0]}
+              </Avatar>
+              <div style={{
+                background: item.isUser ? '#e6f7ff' : '#f0f0f0',
+                padding: '8px 12px',
+                borderRadius: '12px',
+                [item.isUser ? 'borderTopRightRadius' : 'borderTopLeftRadius']: '0',
+              }}>
+                <Text strong>{item.sender}: </Text>
+                <Text>{item.content}</Text>
+              </div>
+            </div>
+          </List.Item>
+        )}
+        style={{ 
+          flexGrow: 1, 
+          overflowY: "auto", 
+          marginBottom: "1rem",
+          border: 'none' // Remove the border around the List
+        }}
+      />
+      <div style={{ display: "flex" }}>
+        <TextArea
+          value={message}
+          onChange={handleMessageChange}
+          onKeyPress={handleKeyPress}
+          placeholder="Type your message here (Press Enter to send)"
+          autoSize={{ minRows: 2, maxRows: 6 }}
+          style={{ flexGrow: 1, marginRight: "1rem" }}
+        />
+        <Button
+          type="primary"
+          icon={<SendOutlined />}
+          onClick={handleSendMessage}
+        >
+          Send
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default ChatroomContainer;
