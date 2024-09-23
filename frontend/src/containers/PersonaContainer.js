@@ -1,47 +1,50 @@
-import React, { useState } from 'react';
-import { Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Card } from 'antd';
 import PersonaSelector from '../components/PersonaSelector';
 import WordCloud from '../components/WordCloud';
-
-const personas = [
-  { 
-    id: 1, 
-    name: 'Emily Chen', 
-    description: ['pro-innovation', 'tech-optimist', 'deregulation', 'market-driven', 'startup-friendly', 'crypto-enthusiast', 'disruptive-finance', 'global-perspective', 'risk-tolerant', 'future-focused']
-  },
-  { 
-    id: 2, 
-    name: 'Michael Johnson', 
-    description: ['regulatory-compliance', 'risk-averse', 'consumer-protection', 'data-privacy', 'anti-money-laundering', 'financial-stability', 'traditional-banking', 'cautious-innovation', 'systemic-risk-aware', 'transparency-advocate']
-  },
-  { 
-    id: 3, 
-    name: 'Sarah Thompson', 
-    description: ['financial-inclusion', 'ethical-banking', 'sustainable-finance', 'social-responsibility', 'community-focused', 'fair-lending', 'stakeholder-capitalism', 'impact-investing', 'financial-literacy', 'consumer-rights']
-  },
-  {
-    id: 4,
-    name: 'David Rodriguez',
-    description: ['free-market', 'minimal-regulation', 'pro-business', 'tax-efficiency', 'economic-growth', 'competitive-markets', 'financial-innovation', 'global-trade', 'capital-formation', 'shareholder-value']
-  }
-];
+import liveDiscussionData from '../data/live_discussion.json';
 
 function PersonaContainer() {
   const [selectedPersona, setSelectedPersona] = useState(null);
+  const [personaTypes, setPersonaTypes] = useState(null);
+
+  useEffect(() => {
+    // This effect will run once when the component mounts
+    // In a real scenario, you'd listen for a global state change or use a state management solution
+    const handleSubmit = () => {
+      setPersonaTypes(liveDiscussionData.personaTypes);
+    };
+
+    // Add event listener for custom 'submit' event
+    window.addEventListener('submit', handleSubmit);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener('submit', handleSubmit);
+    };
+  }, []);
 
   const handlePersonaSelect = (personaId) => {
-    const persona = personas.find(p => p.id === personaId);
+    const persona = Object.values(personaTypes || {}).flat().find(p => p.id === personaId);
     setSelectedPersona(persona);
   };
+
+  if (!personaTypes) {
+    return null; // Don't render anything if data not loaded
+  }
 
   return (
     <Row gutter={24}>
       <Col span={8}>
-        <PersonaSelector 
-          personas={personas} 
-          onSelect={handlePersonaSelect} 
-          selectedPersonaId={selectedPersona?.id}
-        />
+        {Object.entries(personaTypes).map(([type, personas]) => (
+          <Card title={type} bordered={false} key={type} style={{ marginBottom: '16px' }}>
+            <PersonaSelector 
+              personas={personas} 
+              onSelect={handlePersonaSelect} 
+              selectedPersonaId={selectedPersona?.id}
+            />
+          </Card>
+        ))}
       </Col>
       <Col span={16}>
         {selectedPersona && (
