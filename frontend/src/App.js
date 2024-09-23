@@ -14,9 +14,15 @@ const { TabPane } = Tabs;
 
 function App() {
   const [showReport, setShowReport] = useState(false);
+  const [personas, setPersonas] = useState(null);
 
   const handleShowReport = () => {
     setShowReport(true);
+  };
+
+  const handlePersonasUpdate = (newPersonas) => {
+    console.log('Updating personas in App:', newPersonas); // Add this log
+    setPersonas(newPersonas);
   };
 
   // Sample words for the WordCloud
@@ -71,7 +77,7 @@ function App() {
           >
             <TabPane tab="File Submission" key="1">
               <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
-                <InputContainer onSubmit={handleShowReport} />
+                <InputContainer onSubmit={handleShowReport} onPersonasUpdate={handlePersonasUpdate} />
               </div>
               <div
                 style={{
@@ -90,7 +96,7 @@ function App() {
                   <div
                     style={{ background: "#fff", padding: 24, minHeight: 280 }}
                   >
-                    <PersonaContainer />
+                    <PersonaContainer personas={personas} />
                   </div>
                 </Col>
                 <Col xs={24} lg={12}>
