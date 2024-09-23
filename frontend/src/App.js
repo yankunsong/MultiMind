@@ -13,41 +13,13 @@ const { Title } = Typography;
 const { TabPane } = Tabs;
 
 function App() {
-  const [showReport, setShowReport] = useState(false);
   const [personas, setPersonas] = useState(null);
+  const [report, setReport] = useState(null);
 
-  const handleShowReport = () => {
-    setShowReport(true);
+  const handleSubmit = (data) => {
+    setPersonas(data.personas);
+    setReport(data.report);
   };
-
-  const handlePersonasUpdate = (newPersonas) => {
-    console.log('Updating personas in App:', newPersonas); // Add this log
-    setPersonas(newPersonas);
-  };
-
-  // Sample words for the WordCloud
-  const sampleWords = [
-    "innovation",
-    "regulation",
-    "fintech",
-    "compliance",
-    "blockchain",
-    "cryptocurrency",
-    "AI",
-    "machine learning",
-    "data analytics",
-    "cybersecurity",
-    "risk management",
-    "digital transformation",
-    "open banking",
-    "regtech",
-    "financial inclusion",
-    "peer-to-peer lending",
-    "robo-advisors",
-    "API",
-    "cloud computing",
-    "big data",
-  ];
 
   return (
     <ConfigProvider
@@ -77,7 +49,7 @@ function App() {
           >
             <TabPane tab="File Submission" key="1">
               <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
-                <InputContainer onSubmit={handleShowReport} onPersonasUpdate={handlePersonasUpdate} />
+                <InputContainer onSubmit={handleSubmit} />
               </div>
               <div
                 style={{
@@ -87,7 +59,7 @@ function App() {
                   marginTop: 24,
                 }}
               >
-                <MultiMindReportContainer showReport={showReport} />
+                <MultiMindReportContainer report={report} />
               </div>
             </TabPane>
             <TabPane tab="Live Discussion" key="2">

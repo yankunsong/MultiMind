@@ -1,16 +1,12 @@
 import React from 'react';
-import { Typography } from 'antd';
 import MultiMindReport from '../components/MultiMindReport';
 
-const { Title } = Typography;
+function MultiMindReportContainer({ report }) {
+  if (!report) {
+    return null;
+  }
 
-function MultiMindReportContainer({ showReport }) {
-  return (
-    <div>
-      <Title level={4}>MultiMind Report</Title>
-      {showReport && <MultiMindReport />} {/* Conditionally render the report */}
-    </div>
-  );
+  return <MultiMindReport report={report} />;
 }
 
 export default MultiMindReportContainer;

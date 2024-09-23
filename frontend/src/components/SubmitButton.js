@@ -1,15 +1,15 @@
 import React from 'react';
 import { Button } from 'antd';
-import { mockApiRequest } from '../utils/mockApi'; // We'll create this file
+import { mockApiRequest } from '../utils/mockApi';
 
 function SubmitButton({ onSubmit }) {
   const handleClick = async () => {
     try {
       const response = await mockApiRequest();
-      if (response && response.personas) {
-        console.log('Personas data received:', response.personas); // Add this log
+      if (response && response.personas && response.report) {
+        console.log('Data received:', response); // Add this log
         if (onSubmit) {
-          onSubmit(response.personas);
+          onSubmit(response);
         }
       }
     } catch (error) {

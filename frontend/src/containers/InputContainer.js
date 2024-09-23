@@ -4,7 +4,7 @@ import TextInput from '../components/TextInput';
 import FileUpload from '../components/FileUpload';
 import SubmitButton from '../components/SubmitButton';
 
-function InputContainer({ onSubmit, onPersonasUpdate }) {
+function InputContainer({ onSubmit }) {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
 
@@ -19,11 +19,10 @@ function InputContainer({ onSubmit, onPersonasUpdate }) {
     }
   };
 
-  const handleSubmit = (personas) => {
+  const handleSubmit = (data) => {
     console.log('Submitting:', { text, file });
-    console.log('Personas received in InputContainer:', personas); // Add this log
-    onPersonasUpdate(personas); // Pass the personas data to the parent component
-    onSubmit(); // Call this to show the report
+    console.log('Data received in InputContainer:', data);
+    onSubmit(data);
   };
 
   return (
