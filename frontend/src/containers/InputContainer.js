@@ -19,10 +19,10 @@ function InputContainer({ onSubmit }) {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (data) => {
     console.log('Submitting:', { text, file });
-    onSubmit(); // Call the onSubmit prop to show the report
-    // TODO: Implement submission logic
+    console.log('Data received in InputContainer:', data);
+    onSubmit(data);
   };
 
   return (
