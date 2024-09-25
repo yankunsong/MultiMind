@@ -15,10 +15,12 @@ const { TabPane } = Tabs;
 function App() {
   const [personas, setPersonas] = useState(null);
   const [report, setReport] = useState(null);
+  const [improvementReport, setImprovementReport] = useState(null);
 
   const handleSubmit = (data) => {
     setPersonas(data.personas);
     setReport(data.report);
+    setImprovementReport(data.improvementReport);
   };
 
   return (
@@ -82,7 +84,7 @@ function App() {
             </TabPane>
             <TabPane tab="Potential Improvements" key="3">
               <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
-                <ImprovementsContainer />
+                <ImprovementsContainer report={improvementReport} />
               </div>
             </TabPane>
           </Tabs>

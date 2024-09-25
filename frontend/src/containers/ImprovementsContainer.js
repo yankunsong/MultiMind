@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Typography, Divider, Space, Button } from 'antd';
 import { PrinterOutlined, DownloadOutlined } from '@ant-design/icons';
-import improvementsData from '../data/improvements_report.json';
 
 const { Title, Paragraph, Text } = Typography;
 
-function ImprovementsContainer() {
-  const [report, setReport] = useState(null);
-
-  useEffect(() => {
-    setReport(improvementsData);
-  }, []);
-
+function ImprovementsContainer({ report }) {
   const handlePrint = () => {
     window.print();
   };
