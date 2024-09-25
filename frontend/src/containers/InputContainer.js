@@ -7,6 +7,7 @@ import SubmitButton from '../components/SubmitButton';
 function InputContainer({ onSubmit }) {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleTextChange = (value) => {
     setText(value);
@@ -27,9 +28,9 @@ function InputContainer({ onSubmit }) {
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      <TextInput value={text} onChange={handleTextChange} />
-      <FileUpload onChange={handleFileChange} />
-      <SubmitButton onSubmit={handleSubmit} />
+      <TextInput value={text} onChange={handleTextChange} disabled={loading} />
+      <FileUpload onChange={handleFileChange} disabled={loading} />
+      <SubmitButton onSubmit={handleSubmit} loading={loading} setLoading={setLoading} />
     </Space>
   );
 }

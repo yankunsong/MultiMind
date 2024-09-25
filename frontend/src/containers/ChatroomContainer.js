@@ -1,29 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
+import { mockChatroomApi } from '../utils/mockChatroomApi';
 
 const { TextArea } = Input;
 const { Option } = Select;
-const { Title, Text } = Typography;  // Add Text to the destructuring
+const { Title, Text } = Typography;
 
-const personas = [
-  { id: 1, name: "Emily Chen", color: "#FF6B6B" },
-  { id: 2, name: "Michael Johnson", color: "#4ECDC4" },
-  { id: 3, name: "Sarah Thompson", color: "#45B7D1" },
-  { id: 4, name: "David Rodriguez", color: "#FFA07A" },
+// Define an array of colors for the avatars
+const avatarColors = [
+  '#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#ff4d4f', '#52c41a', '#1890ff', '#722ed1'
 ];
 
-const dummyResponses = [
-  "That's an interesting perspective. Have you considered...",
-  "I agree with your point. Additionally, we should think about...",
-  "I'm not sure I agree. My concern is...",
-  "That's a valid point. However, we also need to consider...",
-];
-
-function ChatroomContainer() {
+function ChatroomContainer({ personas }) {
   const [selectedPersonas, setSelectedPersonas] = useState([]);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
+  const [flattenedPersonas, setFlattenedPersonas] = useState([]);
+
+  useEffect(() => {
+    if (personas) {
+      const flattened = Object.values(personas).flat().map((persona, index) => ({
+        ...persona,
+        color: avatarColors[index % avatarColors.length]
+      }));
+      setFlattenedPersonas(flattened);
+    }
+  }, [personas]);
 
   const handlePersonaChange = (value) => {
     setSelectedPersonas(value);
@@ -35,32 +38,29 @@ function ChatroomContainer() {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevents default behavior (new line)
+      e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() && selectedPersonas.length > 0) {
       const newUserMessage = { sender: "You", content: message, isUser: true };
-      setChatHistory([...chatHistory, newUserMessage]);
+      setChatHistory(prev => [...prev, newUserMessage]);
 
-      // Generate dummy responses from selected personas
-      selectedPersonas.forEach((personaId) => {
-        const persona = personas.find((p) => p.id === personaId);
-        const dummyResponse = {
-          sender: persona.name,
-          content:
-            dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
-          isUser: false,
-          color: persona.color,
-        };
-        setTimeout(() => {
-          setChatHistory((prev) => [...prev, dummyResponse]);
-        }, Math.random() * 1000 + 500); // Random delay between 500-1500ms
-      });
+      const selectedPersonaObjects = selectedPersonas.map(id => 
+        flattenedPersonas.find(p => p.id === id)
+      );
 
+      // Clear the message input immediately
       setMessage("");
+
+      try {
+        const responses = await mockChatroomApi(message, selectedPersonaObjects);
+        setChatHistory(prev => [...prev, ...responses]);
+      } catch (error) {
+        console.error("Error fetching responses:", error);
+      }
     }
   };
 
@@ -74,7 +74,7 @@ function ChatroomContainer() {
         onChange={handlePersonaChange}
         value={selectedPersonas}
       >
-        {personas.map((persona) => (
+        {flattenedPersonas.map((persona) => (
           <Option key={persona.id} value={persona.id}>
             {persona.name}
           </Option>
@@ -86,8 +86,8 @@ function ChatroomContainer() {
         renderItem={(item) => (
           <List.Item style={{ 
             justifyContent: item.isUser ? 'flex-end' : 'flex-start',
-            border: 'none', // Remove the border between items
-            padding: '4px 0' // Reduce padding between items
+            border: 'none',
+            padding: '4px 0'
           }}>
             <div style={{ 
               display: 'flex', 
@@ -118,7 +118,7 @@ function ChatroomContainer() {
           flexGrow: 1, 
           overflowY: "auto", 
           marginBottom: "1rem",
-          border: 'none' // Remove the border around the List
+          border: 'none'
         }}
       />
       <div style={{ display: "flex" }}>
