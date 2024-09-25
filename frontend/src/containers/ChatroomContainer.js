@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;  // Add Text to the destructuring
-
-const personas = [
-  { id: 1, name: "Emily Chen", color: "#FF6B6B" },
-  { id: 2, name: "Michael Johnson", color: "#4ECDC4" },
-  { id: 3, name: "Sarah Thompson", color: "#45B7D1" },
-  { id: 4, name: "David Rodriguez", color: "#FFA07A" },
-];
 
 const dummyResponses = [
   "That's an interesting perspective. Have you considered...",
@@ -20,10 +13,18 @@ const dummyResponses = [
   "That's a valid point. However, we also need to consider...",
 ];
 
-function ChatroomContainer() {
+function ChatroomContainer({ personas }) {
   const [selectedPersonas, setSelectedPersonas] = useState([]);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
+  const [flattenedPersonas, setFlattenedPersonas] = useState([]);
+
+  useEffect(() => {
+    if (personas) {
+      const flattened = Object.values(personas).flat();
+      setFlattenedPersonas(flattened);
+    }
+  }, [personas]);
 
   const handlePersonaChange = (value) => {
     setSelectedPersonas(value);
@@ -45,19 +46,21 @@ function ChatroomContainer() {
       const newUserMessage = { sender: "You", content: message, isUser: true };
       setChatHistory([...chatHistory, newUserMessage]);
 
-      // Generate dummy responses from selected personas
+      // Generate responses from selected personas
       selectedPersonas.forEach((personaId) => {
-        const persona = personas.find((p) => p.id === personaId);
-        const dummyResponse = {
-          sender: persona.name,
-          content:
-            dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
-          isUser: false,
-          color: persona.color,
-        };
-        setTimeout(() => {
-          setChatHistory((prev) => [...prev, dummyResponse]);
-        }, Math.random() * 1000 + 500); // Random delay between 500-1500ms
+        const persona = flattenedPersonas.find((p) => p.id === personaId);
+        if (persona) {
+          const dummyResponse = {
+            sender: persona.name,
+            content:
+              dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
+            isUser: false,
+            color: persona.color || '#1890ff', // Use a default color if not provided
+          };
+          setTimeout(() => {
+            setChatHistory((prev) => [...prev, dummyResponse]);
+          }, Math.random() * 1000 + 500); // Random delay between 500-1500ms
+        }
       });
 
       setMessage("");
@@ -74,7 +77,7 @@ function ChatroomContainer() {
         onChange={handlePersonaChange}
         value={selectedPersonas}
       >
-        {personas.map((persona) => (
+        {flattenedPersonas.map((persona) => (
           <Option key={persona.id} value={persona.id}>
             {persona.name}
           </Option>

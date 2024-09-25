@@ -8,6 +8,6 @@ export const mockApiRequest = () => {
         personas: liveDiscussionData.personaTypes,
         report: reportData.report
       });
-    }, 6000); // Simulate a 6-second delay
+    }, 2000); // Simulate a 2-second delay
   });
 };

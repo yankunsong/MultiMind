@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Divider, Space, Button } from 'antd';
 import { PrinterOutlined, DownloadOutlined } from '@ant-design/icons';
+import improvementsData from '../data/improvements_report.json';
 
 const { Title, Paragraph, Text } = Typography;
 
 function ImprovementsContainer() {
+  const [report, setReport] = useState(null);
+
+  useEffect(() => {
+    setReport(improvementsData);
+  }, []);
+
   const handlePrint = () => {
     window.print();
   };
@@ -19,6 +26,8 @@ function ImprovementsContainer() {
     document.body.removeChild(element);
   };
 
+  if (!report) return null;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <Space style={{ marginBottom: '20px' }}>
@@ -31,67 +40,36 @@ function ImprovementsContainer() {
       </Space>
 
       <div id="report-content">
-        <Title level={2}>Potential Improvements Report</Title>
+        <Title level={2}>{report.title}</Title>
         <Divider />
         
         <Title level={3}>Executive Summary</Title>
-        <Paragraph>
-          This report outlines key areas for potential improvements in our financial regulatory processes. 
-          Based on comprehensive analysis and stakeholder feedback, we have identified several opportunities 
-          to enhance efficiency, transparency, and effectiveness in our operations.
-        </Paragraph>
+        <Paragraph>{report.executiveSummary}</Paragraph>
 
-        <Title level={3}>1. Streamlining Compliance Procedures</Title>
-        <Paragraph>
-          <Text strong>Current State:</Text> Our compliance procedures, while thorough, have been noted to be time-consuming and sometimes redundant.
-        </Paragraph>
-        <Paragraph>
-          <Text strong>Proposed Improvement:</Text> Implement an AI-driven compliance check system that can:
-          <ul>
-            <li>Automate routine compliance checks</li>
-            <li>Flag high-risk cases for human review</li>
-            <li>Reduce processing time by an estimated 40%</li>
-          </ul>
-        </Paragraph>
-
-        <Title level={3}>2. Enhancing Data Analytics Capabilities</Title>
-        <Paragraph>
-          <Text strong>Current State:</Text> Our data analytics tools are not fully utilizing the wealth of information at our disposal.
-        </Paragraph>
-        <Paragraph>
-          <Text strong>Proposed Improvement:</Text> Invest in advanced data analytics platforms to:
-          <ul>
-            <li>Identify market trends and potential risks more accurately</li>
-            <li>Provide real-time insights to regulators and stakeholders</li>
-            <li>Enhance predictive modeling for market behavior</li>
-          </ul>
-        </Paragraph>
-
-        <Title level={3}>3. Improving Stakeholder Communication</Title>
-        <Paragraph>
-          <Text strong>Current State:</Text> Communication with regulated entities and the public can sometimes be unclear or delayed.
-        </Paragraph>
-        <Paragraph>
-          <Text strong>Proposed Improvement:</Text> Develop a comprehensive communication strategy that includes:
-          <ul>
-            <li>A user-friendly portal for real-time updates and guidance</li>
-            <li>Regular webinars and interactive sessions for clarifications</li>
-            <li>Simplified, plain-language explanations of complex regulations</li>
-          </ul>
-        </Paragraph>
+        {report.improvements.map((improvement, index) => (
+          <React.Fragment key={index}>
+            <Title level={3}>{`${index + 1}. ${improvement.title}`}</Title>
+            <Paragraph>
+              <Text strong>Current State:</Text> {improvement.currentState}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>Proposed Improvement:</Text> {improvement.proposedImprovement}
+              <ul>
+                {improvement.details.map((detail, detailIndex) => (
+                  <li key={detailIndex}>{detail}</li>
+                ))}
+              </ul>
+            </Paragraph>
+          </React.Fragment>
+        ))}
 
         <Divider />
 
         <Title level={3}>Conclusion</Title>
-        <Paragraph>
-          Implementing these improvements will significantly enhance our regulatory effectiveness, 
-          reduce burden on compliant entities, and improve overall market stability. We recommend 
-          a phased approach to implementation, starting with the streamlining of compliance procedures.
-        </Paragraph>
+        <Paragraph>{report.conclusion}</Paragraph>
 
         <Paragraph>
-          <Text strong>Next Steps:</Text> Detailed project plans for each improvement area will be developed, 
-          including timelines, resource requirements, and key performance indicators to measure success.
+          <Text strong>Next Steps:</Text> {report.nextSteps}
         </Paragraph>
       </div>
     </div>

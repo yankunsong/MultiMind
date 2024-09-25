@@ -75,7 +75,7 @@ function App() {
                   <div
                     style={{ background: "#fff", padding: 24, minHeight: 280 }}
                   >
-                    <ChatroomContainer />
+                    <ChatroomContainer personas={personas} />
                   </div>
                 </Col>
               </Row>
