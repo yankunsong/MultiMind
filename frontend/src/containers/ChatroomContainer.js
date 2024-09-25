@@ -13,6 +13,11 @@ const dummyResponses = [
   "That's a valid point. However, we also need to consider...",
 ];
 
+// Define an array of colors for the avatars
+const avatarColors = [
+  '#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#ff4d4f', '#52c41a', '#1890ff', '#722ed1'
+];
+
 function ChatroomContainer({ personas }) {
   const [selectedPersonas, setSelectedPersonas] = useState([]);
   const [message, setMessage] = useState("");
@@ -21,7 +26,10 @@ function ChatroomContainer({ personas }) {
 
   useEffect(() => {
     if (personas) {
-      const flattened = Object.values(personas).flat();
+      const flattened = Object.values(personas).flat().map((persona, index) => ({
+        ...persona,
+        color: avatarColors[index % avatarColors.length] // Assign a color to each persona
+      }));
       setFlattenedPersonas(flattened);
     }
   }, [personas]);
