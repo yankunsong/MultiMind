@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
-import chatroomData from '../data/chatroom.json';
+import { mockChatroomApi } from '../utils/mockChatroomApi';
 
 const { TextArea } = Input;
 const { Option } = Select;
-const { Title, Text } = Typography;  // Add Text to the destructuring
+const { Title, Text } = Typography;
 
 // Define an array of colors for the avatars
 const avatarColors = [
@@ -22,7 +22,7 @@ function ChatroomContainer({ personas }) {
     if (personas) {
       const flattened = Object.values(personas).flat().map((persona, index) => ({
         ...persona,
-        color: avatarColors[index % avatarColors.length] // Assign a color to each persona
+        color: avatarColors[index % avatarColors.length]
       }));
       setFlattenedPersonas(flattened);
     }
@@ -38,32 +38,26 @@ function ChatroomContainer({ personas }) {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevents default behavior (new line)
+      e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() && selectedPersonas.length > 0) {
       const newUserMessage = { sender: "You", content: message, isUser: true };
-      setChatHistory([...chatHistory, newUserMessage]);
+      setChatHistory(prev => [...prev, newUserMessage]);
 
-      // Generate responses from selected personas
-      selectedPersonas.forEach((personaId) => {
-        const persona = flattenedPersonas.find((p) => p.id === personaId);
-        if (persona) {
-          const response = chatroomData.personaResponses[persona.name];
-          const dummyResponse = {
-            sender: persona.name,
-            content: response,
-            isUser: false,
-            color: persona.color || '#1890ff',
-          };
-          setTimeout(() => {
-            setChatHistory((prev) => [...prev, dummyResponse]);
-          }, Math.random() * 1000 + 500);
-        }
-      });
+      const selectedPersonaObjects = selectedPersonas.map(id => 
+        flattenedPersonas.find(p => p.id === id)
+      );
+
+      try {
+        const responses = await mockChatroomApi(message, selectedPersonaObjects);
+        setChatHistory(prev => [...prev, ...responses]);
+      } catch (error) {
+        console.error("Error fetching responses:", error);
+      }
 
       setMessage("");
     }
@@ -91,8 +85,8 @@ function ChatroomContainer({ personas }) {
         renderItem={(item) => (
           <List.Item style={{ 
             justifyContent: item.isUser ? 'flex-end' : 'flex-start',
-            border: 'none', // Remove the border between items
-            padding: '4px 0' // Reduce padding between items
+            border: 'none',
+            padding: '4px 0'
           }}>
             <div style={{ 
               display: 'flex', 
@@ -123,7 +117,7 @@ function ChatroomContainer({ personas }) {
           flexGrow: 1, 
           overflowY: "auto", 
           marginBottom: "1rem",
-          border: 'none' // Remove the border around the List
+          border: 'none'
         }}
       />
       <div style={{ display: "flex" }}>
