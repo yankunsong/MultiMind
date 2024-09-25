@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
+import chatroomData from '../data/chatroom.json';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;  // Add Text to the destructuring
-
-const dummyResponses = [
-  "That's an interesting perspective. Have you considered...",
-  "I agree with your point. Additionally, we should think about...",
-  "I'm not sure I agree. My concern is...",
-  "That's a valid point. However, we also need to consider...",
-];
 
 // Define an array of colors for the avatars
 const avatarColors = [
@@ -58,16 +52,16 @@ function ChatroomContainer({ personas }) {
       selectedPersonas.forEach((personaId) => {
         const persona = flattenedPersonas.find((p) => p.id === personaId);
         if (persona) {
+          const response = chatroomData.personaResponses[persona.name];
           const dummyResponse = {
             sender: persona.name,
-            content:
-              dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
+            content: response,
             isUser: false,
-            color: persona.color || '#1890ff', // Use a default color if not provided
+            color: persona.color || '#1890ff',
           };
           setTimeout(() => {
             setChatHistory((prev) => [...prev, dummyResponse]);
-          }, Math.random() * 1000 + 500); // Random delay between 500-1500ms
+          }, Math.random() * 1000 + 500);
         }
       });
 
