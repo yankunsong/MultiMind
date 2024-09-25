@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { mockApiRequest } from '../utils/mockApi';
+import { mockApiRequest } from '../utils/mockSubmitApi';
 
 function SubmitButton({ onSubmit, loading, setLoading }) {
   const handleClick = async () => {

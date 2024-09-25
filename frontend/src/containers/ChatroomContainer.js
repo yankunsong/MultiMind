@@ -52,14 +52,15 @@ function ChatroomContainer({ personas }) {
         flattenedPersonas.find(p => p.id === id)
       );
 
+      // Clear the message input immediately
+      setMessage("");
+
       try {
         const responses = await mockChatroomApi(message, selectedPersonaObjects);
         setChatHistory(prev => [...prev, ...responses]);
       } catch (error) {
         console.error("Error fetching responses:", error);
       }
-
-      setMessage("");
     }
   };
 
