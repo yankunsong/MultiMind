@@ -1,12 +1,24 @@
 {
   "personaResponses": {
-    "Emily Chen": "Emily Chen's response.",
-    "John Doe": "John Doe's response.",
-    "Michael Johnson": "Michael Johnson's response.",
-    "Jane Smith": "Jane Smith's response.",
-    "Sarah Thompson": "Sarah Thompson's response.",
-    "Alice Brown": "Alice Brown's response.",
-    "David Rodriguez": "David Rodriguez's response.",
-    "Bob White": "Bob White's response."
+    "Emily Chen": [
+      "As an environmental scientist, I believe we need to prioritize sustainable practices.",
+      "The data clearly shows the impact of climate change on our ecosystems.",
+      "We should focus on renewable energy sources to reduce our carbon footprint."
+    ],
+    "John Doe": [
+      "From a business perspective, we need to balance environmental concerns with economic growth.",
+      "Implementing green technologies can actually boost our economy in the long run.",
+      "We should consider tax incentives for companies adopting eco-friendly practices."
+    ],
+    "Michael Johnson": [
+      "As a policy maker, I think we need a comprehensive approach to environmental issues.",
+      "We should consider both short-term and long-term effects of our environmental policies.",
+      "International cooperation is crucial in addressing global environmental challenges."
+    ],
+    "Jane Smith": [
+      "Education is key in raising awareness about environmental issues.",
+      "We need to incorporate environmental studies in our school curricula.",
+      "Community engagement can play a significant role in local environmental initiatives."
+    ]
   }
 }

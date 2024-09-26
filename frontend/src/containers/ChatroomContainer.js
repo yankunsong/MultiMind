@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { mockChatroomApi } from '../utils/mockChatroomApi';
+import chatroomData from '../data/chatroom.json';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,6 +18,7 @@ function ChatroomContainer({ personas }) {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [flattenedPersonas, setFlattenedPersonas] = useState([]);
+  const [responseIndices, setResponseIndices] = useState({});
 
   useEffect(() => {
     if (personas) {
@@ -30,6 +32,8 @@ function ChatroomContainer({ personas }) {
 
   const handlePersonaChange = (value) => {
     setSelectedPersonas(value);
+    // Reset response indices when personas are changed
+    setResponseIndices({});
   };
 
   const handleMessageChange = (e) => {
@@ -46,20 +50,52 @@ function ChatroomContainer({ personas }) {
   const handleSendMessage = async () => {
     if (message.trim() && selectedPersonas.length > 0) {
       const newUserMessage = { sender: "You", content: message, isUser: true };
-      setChatHistory(prev => [...prev, newUserMessage]);
-
       const selectedPersonaObjects = selectedPersonas.map(id => 
         flattenedPersonas.find(p => p.id === id)
       );
 
-      // Clear the message input immediately
+      // Add user message and loading messages for each persona
+      setChatHistory(prev => [
+        ...prev,
+        newUserMessage,
+        ...selectedPersonaObjects.map(persona => ({
+          sender: persona.name,
+          content: "...",
+          isLoading: true,
+          color: persona.color
+        }))
+      ]);
+
       setMessage("");
 
       try {
         const responses = await mockChatroomApi(message, selectedPersonaObjects);
-        setChatHistory(prev => [...prev, ...responses]);
+        setChatHistory(prev => {
+          const newHistory = [...prev];
+          responses.forEach((response, index) => {
+            const personaName = response.sender;
+            const personaResponses = chatroomData.personaResponses[personaName] || [];
+            const currentIndex = responseIndices[personaName] || 0;
+            const content = personaResponses[currentIndex % personaResponses.length];
+
+            // Find the loading message and replace it with the actual response
+            const loadingIndex = newHistory.findIndex(msg => msg.sender === personaName && msg.isLoading);
+            if (loadingIndex !== -1) {
+              newHistory[loadingIndex] = { ...response, content, color: response.color };
+            }
+
+            // Update the response index for this persona
+            setResponseIndices(prev => ({
+              ...prev,
+              [personaName]: (currentIndex + 1) % personaResponses.length
+            }));
+          });
+          return newHistory;
+        });
       } catch (error) {
         console.error("Error fetching responses:", error);
+        // Remove loading messages in case of error
+        setChatHistory(prev => prev.filter(msg => !msg.isLoading));
       }
     }
   };
@@ -98,7 +134,14 @@ function ChatroomContainer({ personas }) {
               <Avatar style={{ 
                 backgroundColor: item.isUser ? '#1890ff' : item.color, 
                 marginRight: item.isUser ? 0 : 8, 
-                marginLeft: item.isUser ? 8 : 0 
+                marginLeft: item.isUser ? 8 : 0,
+                width: '32px',
+                height: '32px',
+                flexShrink: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: '14px'
               }}>
                 {item.sender[0]}
               </Avatar>
@@ -109,7 +152,11 @@ function ChatroomContainer({ personas }) {
                 [item.isUser ? 'borderTopRightRadius' : 'borderTopLeftRadius']: '0',
               }}>
                 <Text strong>{item.sender}: </Text>
-                <Text>{item.content}</Text>
+                {item.isLoading ? (
+                  <Text style={{ fontStyle: 'italic' }}>Typing...</Text>
+                ) : (
+                  <Text>{item.content}</Text>
+                )}
               </div>
             </div>
           </List.Item>

@@ -3,6 +3,7 @@ import { Table } from 'antd';
 
 function MultiMindReport({ report }) {
   const columns = [
+    { title: 'Persona', dataIndex: 'persona', key: 'persona' },
     { title: 'Volume of Support', dataIndex: 'volumeOfSupport', key: 'volumeOfSupport' },
     { title: 'Strength', dataIndex: 'strength', key: 'strength' },
     { title: 'Position', dataIndex: 'position', key: 'position' },

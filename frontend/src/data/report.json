@@ -5,28 +5,32 @@
       "volumeOfSupport": "High",
       "strength": "Strong",
       "position": "Pro",
-      "argument": "Increased funding for education leads to better societal outcomes."
+      "argument": "Increased funding for education leads to better societal outcomes.",
+      "persona": "Education Advocate"
     },
     {
       "key": 2,
       "volumeOfSupport": "Medium",
       "strength": "Moderate",
       "position": "Con",
-      "argument": "Tax increases may burden lower-income families."
+      "argument": "Tax increases may burden lower-income families.",
+      "persona": "Fiscal Conservative"
     },
     {
       "key": 3,
       "volumeOfSupport": "Low",
       "strength": "Weak",
       "position": "Neutral",
-      "argument": "The impact of the policy depends on its implementation."
+      "argument": "The impact of the policy depends on its implementation.",
+      "persona": "Policy Analyst"
     },
     {
       "key": 4,
       "volumeOfSupport": "High",
       "strength": "Strong",
       "position": "Pro",
-      "argument": "Investment in renewable energy creates new job opportunities."
+      "argument": "Investment in renewable energy creates new job opportunities.",
+      "persona": "Environmental Activist"
     }
   ]
 }
