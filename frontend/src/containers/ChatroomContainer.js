@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { mockChatroomApi } from '../utils/mockChatroomApi';
+import chatroomData from '../data/chatroom.json';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,6 +18,7 @@ function ChatroomContainer({ personas }) {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [flattenedPersonas, setFlattenedPersonas] = useState([]);
+  const [responseIndices, setResponseIndices] = useState({});
 
   useEffect(() => {
     if (personas) {
@@ -30,6 +32,8 @@ function ChatroomContainer({ personas }) {
 
   const handlePersonaChange = (value) => {
     setSelectedPersonas(value);
+    // Reset response indices when personas are changed
+    setResponseIndices({});
   };
 
   const handleMessageChange = (e) => {
@@ -52,12 +56,26 @@ function ChatroomContainer({ personas }) {
         flattenedPersonas.find(p => p.id === id)
       );
 
-      // Clear the message input immediately
       setMessage("");
 
       try {
         const responses = await mockChatroomApi(message, selectedPersonaObjects);
-        setChatHistory(prev => [...prev, ...responses]);
+        const newResponses = responses.map(response => {
+          const personaName = response.sender;
+          const personaResponses = chatroomData.personaResponses[personaName] || [];
+          const currentIndex = responseIndices[personaName] || 0;
+          const content = personaResponses[currentIndex % personaResponses.length];
+
+          // Update the response index for this persona
+          setResponseIndices(prev => ({
+            ...prev,
+            [personaName]: (currentIndex + 1) % personaResponses.length
+          }));
+
+          return { ...response, content };
+        });
+
+        setChatHistory(prev => [...prev, ...newResponses]);
       } catch (error) {
         console.error("Error fetching responses:", error);
       }
