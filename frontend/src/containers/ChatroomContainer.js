@@ -116,7 +116,14 @@ function ChatroomContainer({ personas }) {
               <Avatar style={{ 
                 backgroundColor: item.isUser ? '#1890ff' : item.color, 
                 marginRight: item.isUser ? 0 : 8, 
-                marginLeft: item.isUser ? 8 : 0 
+                marginLeft: item.isUser ? 8 : 0,
+                width: '32px',
+                height: '32px',
+                flexShrink: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: '14px'
               }}>
                 {item.sender[0]}
               </Avatar>
