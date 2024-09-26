@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Select, List, Avatar, Typography, Spin } from "antd";
+import { Input, Button, Select, List, Avatar, Typography } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { mockChatroomApi } from '../utils/mockChatroomApi';
 import chatroomData from '../data/chatroom.json';
@@ -19,7 +19,6 @@ function ChatroomContainer({ personas }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [flattenedPersonas, setFlattenedPersonas] = useState([]);
   const [responseIndices, setResponseIndices] = useState({});
-  const [isLoading, setIsLoading] = useState(false);  // Add this line
 
   useEffect(() => {
     if (personas) {
@@ -51,37 +50,52 @@ function ChatroomContainer({ personas }) {
   const handleSendMessage = async () => {
     if (message.trim() && selectedPersonas.length > 0) {
       const newUserMessage = { sender: "You", content: message, isUser: true };
-      setChatHistory(prev => [...prev, newUserMessage]);
-
       const selectedPersonaObjects = selectedPersonas.map(id => 
         flattenedPersonas.find(p => p.id === id)
       );
 
+      // Add user message and loading messages for each persona
+      setChatHistory(prev => [
+        ...prev,
+        newUserMessage,
+        ...selectedPersonaObjects.map(persona => ({
+          sender: persona.name,
+          content: "...",
+          isLoading: true,
+          color: persona.color
+        }))
+      ]);
+
       setMessage("");
-      setIsLoading(true);  // Set loading to true before API call
 
       try {
         const responses = await mockChatroomApi(message, selectedPersonaObjects);
-        const newResponses = responses.map(response => {
-          const personaName = response.sender;
-          const personaResponses = chatroomData.personaResponses[personaName] || [];
-          const currentIndex = responseIndices[personaName] || 0;
-          const content = personaResponses[currentIndex % personaResponses.length];
+        setChatHistory(prev => {
+          const newHistory = [...prev];
+          responses.forEach((response, index) => {
+            const personaName = response.sender;
+            const personaResponses = chatroomData.personaResponses[personaName] || [];
+            const currentIndex = responseIndices[personaName] || 0;
+            const content = personaResponses[currentIndex % personaResponses.length];
 
-          // Update the response index for this persona
-          setResponseIndices(prev => ({
-            ...prev,
-            [personaName]: (currentIndex + 1) % personaResponses.length
-          }));
+            // Find the loading message and replace it with the actual response
+            const loadingIndex = newHistory.findIndex(msg => msg.sender === personaName && msg.isLoading);
+            if (loadingIndex !== -1) {
+              newHistory[loadingIndex] = { ...response, content, color: response.color };
+            }
 
-          return { ...response, content };
+            // Update the response index for this persona
+            setResponseIndices(prev => ({
+              ...prev,
+              [personaName]: (currentIndex + 1) % personaResponses.length
+            }));
+          });
+          return newHistory;
         });
-
-        setChatHistory(prev => [...prev, ...newResponses]);
       } catch (error) {
         console.error("Error fetching responses:", error);
-      } finally {
-        setIsLoading(false);  // Set loading to false after API call
+        // Remove loading messages in case of error
+        setChatHistory(prev => prev.filter(msg => !msg.isLoading));
       }
     }
   };
@@ -138,7 +152,11 @@ function ChatroomContainer({ personas }) {
                 [item.isUser ? 'borderTopRightRadius' : 'borderTopLeftRadius']: '0',
               }}>
                 <Text strong>{item.sender}: </Text>
-                <Text>{item.content}</Text>
+                {item.isLoading ? (
+                  <Text style={{ fontStyle: 'italic' }}>Typing...</Text>
+                ) : (
+                  <Text>{item.content}</Text>
+                )}
               </div>
             </div>
           </List.Item>
@@ -150,11 +168,6 @@ function ChatroomContainer({ personas }) {
           border: 'none'
         }}
       />
-      {isLoading && (
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <Spin tip="Loading responses..." />
-        </div>
-      )}
       <div style={{ display: "flex" }}>
         <TextArea
           value={message}
@@ -168,7 +181,6 @@ function ChatroomContainer({ personas }) {
           type="primary"
           icon={<SendOutlined />}
           onClick={handleSendMessage}
-          disabled={isLoading}  // Disable the button while loading
         >
           Send
         </Button>
