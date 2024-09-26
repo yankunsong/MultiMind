@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Select, List, Avatar, Typography } from "antd";
+import { Input, Button, Select, List, Avatar, Typography, Spin } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { mockChatroomApi } from '../utils/mockChatroomApi';
 import chatroomData from '../data/chatroom.json';
@@ -19,6 +19,7 @@ function ChatroomContainer({ personas }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [flattenedPersonas, setFlattenedPersonas] = useState([]);
   const [responseIndices, setResponseIndices] = useState({});
+  const [isLoading, setIsLoading] = useState(false);  // Add this line
 
   useEffect(() => {
     if (personas) {
@@ -57,6 +58,7 @@ function ChatroomContainer({ personas }) {
       );
 
       setMessage("");
+      setIsLoading(true);  // Set loading to true before API call
 
       try {
         const responses = await mockChatroomApi(message, selectedPersonaObjects);
@@ -78,6 +80,8 @@ function ChatroomContainer({ personas }) {
         setChatHistory(prev => [...prev, ...newResponses]);
       } catch (error) {
         console.error("Error fetching responses:", error);
+      } finally {
+        setIsLoading(false);  // Set loading to false after API call
       }
     }
   };
@@ -146,6 +150,11 @@ function ChatroomContainer({ personas }) {
           border: 'none'
         }}
       />
+      {isLoading && (
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <Spin tip="Loading responses..." />
+        </div>
+      )}
       <div style={{ display: "flex" }}>
         <TextArea
           value={message}
@@ -159,6 +168,7 @@ function ChatroomContainer({ personas }) {
           type="primary"
           icon={<SendOutlined />}
           onClick={handleSendMessage}
+          disabled={isLoading}  // Disable the button while loading
         >
           Send
         </Button>
